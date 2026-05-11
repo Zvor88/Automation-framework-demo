@@ -11,7 +11,7 @@ import pages.LoginPage;
 
 public class UITests extends BaseTest {
 
-    @Test(description = "Test 1: Login succes cu user valid")
+    @Test
     public void testSuccessfulLogin() {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(ConfigReader.getProperty("ui.username"), ConfigReader.getProperty("ui.password"));
