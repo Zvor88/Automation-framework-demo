@@ -1,4 +1,4 @@
-package config;
+package utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ public class ConfigReader {
 
     static {
         try {
-            FileInputStream fileInputStream = new FileInputStream("src/test/resources/config.properties");
+            FileInputStream fileInputStream = new FileInputStream("src/test/java/resources/config.properties");
             properties = new Properties();
             properties.load(fileInputStream);
         } catch (IOException e) {

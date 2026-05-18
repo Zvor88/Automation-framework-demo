@@ -1,7 +1,7 @@
 package tests;
 
 import base.BaseTest;
-import config.ConfigReader;
+import utils.ConfigReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.CartPage;
@@ -10,50 +10,53 @@ import pages.InventoryPage;
 import pages.LoginPage;
 
 public class UITests extends BaseTest {
-
-    @Test
+    @Test(description = "UI 1: Autentificare cu succes")
     public void testSuccessfulLogin() {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(ConfigReader.getProperty("ui.username"), ConfigReader.getProperty("ui.password"));
 
         InventoryPage inventoryPage = new InventoryPage(driver);
-        Assert.assertEquals(inventoryPage.getPageTitle(), "Products", "Titlul paginii de inventar este incorect!");
+        Assert.assertEquals(inventoryPage.getPageTitle(), "Products");
     }
 
-    @Test(description = "Test 2: Login eșuat cu user blocat")
-    public void testLockedOutUser() {
+    @Test(description = "UI 2: Autentificare eșuată - utilizator blocat")
+    public void testLockedOutLogin() {
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("locked_out_user", "secret_sauce");
+        loginPage.login("locked_out_user", ConfigReader.getProperty("ui.password"));
 
-        String error = loginPage.getErrorMessageText();
-        Assert.assertTrue(error.contains("Sorry, this user has been locked out"), "Mesajul de eroare nu este cel așteptat!");
+        Assert.assertTrue(loginPage.getErrorMessageText().contains("Sorry, this user has been locked out."));
     }
 
-    @Test(description = "Test 3: Adăugare produs în coș")
-    public void testAddToCart() {
+    @Test(description = "UI 3: Adăugare produs în coș din dashboard")
+    public void testAddProductToCart() {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(ConfigReader.getProperty("ui.username"), ConfigReader.getProperty("ui.password"));
 
         InventoryPage inventoryPage = new InventoryPage(driver);
         inventoryPage.addFirstProductToCart();
 
-        Assert.assertEquals(inventoryPage.getCartCount(), "1", "Numărul de produse din coș nu s-a actualizat!");
+        Assert.assertEquals(inventoryPage.getCartCount(), "1");
     }
 
-    @Test(description = "Test 4: Verificare produs în pagina de coș")
-    public void testProductPersistenceInCart() {
-        new LoginPage(driver).login("standard_user", "secret_sauce");
+    @Test(description = "UI 4: Verificare prezență produs în Cart Page")
+    public void testProductVisibilityInCart() {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(ConfigReader.getProperty("ui.username"), ConfigReader.getProperty("ui.password"));
+
         InventoryPage inventoryPage = new InventoryPage(driver);
         inventoryPage.addFirstProductToCart();
         inventoryPage.goToCart();
 
         CartPage cartPage = new CartPage(driver);
-        Assert.assertFalse(cartPage.getFirstItemName().isEmpty(), "Produsul nu este vizibil în coș!");
+        Assert.assertFalse(cartPage.getFirstItemName().isEmpty(), "Coșul este gol, produsul nu a fost reținut!");
     }
 
-    @Test(description = "Test 5: Flux complet de Checkout")
-    public void testFullCheckoutFlow() {
-        new LoginPage(driver).login("standard_user", "secret_sauce");
+    @Test(description = "UI 5: Flux complet de la adăugare în coș până la finalizare comandă (Checkout)")
+    public void testFullEndToEndCheckoutFlow() {
+
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(ConfigReader.getProperty("ui.username"), ConfigReader.getProperty("ui.password"));
+
         InventoryPage inventoryPage = new InventoryPage(driver);
         inventoryPage.addFirstProductToCart();
         inventoryPage.goToCart();
@@ -62,9 +65,9 @@ public class UITests extends BaseTest {
         cartPage.clickCheckout();
 
         CheckoutPage checkoutPage = new CheckoutPage(driver);
-        checkoutPage.fillInformation("QA", "Tester", "12345");
+        checkoutPage.fillInformation("Alex", "QA", "123456");
         checkoutPage.clickFinish();
 
-        Assert.assertEquals(checkoutPage.getSuccessMessage(), "Thank you for your order!", "Comanda nu a fost finalizată cu succes!");
+        Assert.assertEquals(checkoutPage.getSuccessMessage(), "Thank you for your order!", "Comanda nu a fost procesată corect!");
     }
 }
