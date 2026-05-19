@@ -2,10 +2,7 @@ package base;
 
 import listener.TestListener;
 import org.testng.annotations.*;
-import utils.ConfigReader;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import utils.DriverFactory;
 
 import java.time.Duration;

@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<!-- Enforces clean thread isolation by running separate parallel execution windows -->
-<suite name="Dog API Full UI Sanity Suite" parallel="tests" thread-count="2" verbose="2">
 
+<!-- Enforces clean thread isolation by running separate parallel execution windows -->
+<suite name="Dog API Full UI/API Sanity Suite" parallel="tests" thread-count="5" verbose="5">
     <!-- Configuration Run Thread 01: Execute in Google Chrome Engine -->
+
     <test name="Chrome Browser Sanity Suite Component">
         <parameter name="browser" value="chrome"/>
-        <parameter name="env" value="DOG_API"/>
-        <classes>
-            <class name="tests.DogUI"/>
-        </classes>
+        <parameter name="env" value="DOG_UI"/>
+        <classes> <class name="tests.DogUI"/> </classes>
     </test>
-
     <!-- Configuration Run Thread 02: Execute in Mozilla Firefox Engine -->
+
     <test name="Firefox Browser Sanity Suite Component">
         <parameter name="browser" value="firefox"/>
-        <parameter name="env" value="DOG_API"/>
-        <classes>
-            <class name="tests.DogUI"/>
+        <parameter name="env" value="DOG_UI"/> <classes>
+        <class name="tests.DogUI"/> </classes>
+    </test>
+    <!-- Configuration Run Thread 03: Execute in Google Chrome Engine -->
+
+    <test name="Chrome Browser Sauce Sanity Suite Component">
+        <parameter name="browser" value="chrome"/>
+        <parameter name="env" value="SAUCEDEMO"/>
+        <classes> <class name="tests.SauceDemoUI"/>
         </classes>
     </test>
+    <!-- Configuration Run Thread 04: Execute in Microsoft Edge Engine -->
 
+    <test name="Edge Browser Sauce Sanity Suite Component">
+        <parameter name="browser" value="edge"/>
+        <parameter name="env" value="SAUCEDEMO"/>
+        <classes> <class name="tests.SauceDemoUI"/>
+        </classes> </test>
+
+    <test name="API Test Suite"> <classes>
+        <class name="tests.DogAPI"/>
+    </classes>
+    </test>
 </suite>

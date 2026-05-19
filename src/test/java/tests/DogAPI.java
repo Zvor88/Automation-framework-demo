@@ -1,5 +1,6 @@
 package tests;
 
+import io.restassured.RestAssured;
 import utils.ConfigReader;
 import io.restassured.http.ContentType;
 import org.testng.annotations.BeforeClass;
@@ -9,78 +10,107 @@ import static org.hamcrest.Matchers.*;
 
 public class DogAPI {
 
+    private static final String ALL_BREEDS_ENDPOINT = "/breeds/list/all";
+    private static final String HOUND_IMAGES_ENDPOINT = "/breed/hound/images";
+    private static final String HOUND_SUB_BREEDS_ENDPOINT = "/breed/hound/list";
+    private static final String RANDOM_IMAGES_ENDPOINT = "/breeds/image/random/{count}";
+
+    private static final String SUCCESS_STATUS = "success";
+
     @BeforeClass
     public void setup() {
-        // Citim URL-ul din fișierul de configurare
-        baseURI = ConfigReader.getProperty("api.dog.baseUrl");
+        RestAssured.baseURI = ConfigReader.getProperty("api.dog.baseUrl");
     }
 
-    @Test(description = "API 1: Listare toate rasele de câini")
-    public void testListAllBreeds() {
+    @Test(description = "Verify all dog breeds are returned successfully")
+    public void shouldReturnAllDogBreeds() {
+
         given()
                 .contentType(ContentType.JSON)
+
                 .when()
-                .get("/breeds/list/all")
+                .get(ALL_BREEDS_ENDPOINT)
+
                 .then()
                 .statusCode(200)
-                .body("status", equalTo("success"))
+                .body("status", equalTo(SUCCESS_STATUS))
                 .body("message", notNullValue())
-                .body("message.hound", is(notNullValue())); // Verifică dacă rasa 'hound' există în listă
+                .body("message.hound", notNullValue());
     }
 
-    @Test(description = "API 2: Obținere imagini aleatorii pentru o rasă specifică (Hound)")
-    public void testGetBreedImages() {
+    @Test(description = "Verify images are returned for Hound breed")
+    public void shouldReturnImagesForHoundBreed() {
+
         given()
                 .contentType(ContentType.JSON)
+
                 .when()
-                .get("/breed/hound/images")
+                .get(HOUND_IMAGES_ENDPOINT)
+
                 .then()
                 .statusCode(200)
-                .body("status", equalTo("success"))
-                .body("message", hasSize(greaterThan(0))) // Verifică dacă lista de imagini nu este goală
-                .body("message[0]", containsString("https://images.dog.ceo/breeds/")); // Verifică structura URL-ului imaginii
+                .body("status", equalTo(SUCCESS_STATUS))
+                .body("message", not(empty()))
+                .body("message[0]", startsWith("https://images.dog.ceo/breeds/"));
     }
 
-    @Test(description = "API 3: Listare sub-rase pentru rasa 'hound'")
-    public void testGetSubBreeds() {
+    @Test(description = "Verify Hound breed sub-breeds list")
+    public void shouldReturnHoundSubBreeds() {
+
         given()
                 .contentType(ContentType.JSON)
+
                 .when()
-                .get("/breed/hound/list")
+                .get(HOUND_SUB_BREEDS_ENDPOINT)
+
                 .then()
                 .statusCode(200)
-                .body("status", equalTo("success"))
-                .body("message", hasItems("afghan", "blood", "english", "ibizan")); // Verifică sub-rasele specifice
+                .body("status", equalTo(SUCCESS_STATUS))
+                .body("message", containsInAnyOrder(
+                        "afghan",
+                        "basset",
+                        "blood",
+                        "english",
+                        "ibizan",
+                        "plott",
+                        "walker"
+                ));
     }
 
-    @Test(description = "API 4: Validare eroare pentru o rasă inexistentă (404)")
-    public void testBreedNotFound() {
-        String rasaInexistenta = "dinozaur";
+    @Test(description = "Verify API returns 404 for invalid breed")
+    public void shouldReturn404ForInvalidBreed() {
+
+        String invalidBreed = "dinozaur";
 
         given()
                 .contentType(ContentType.JSON)
+
                 .when()
-                .get("/breed/" + rasaInexistenta + "/list")
+                .get("/breed/{breed}/list", invalidBreed)
+
                 .then()
-                .statusCode(404) // API-ul returnează 404 pentru rase necunoscute
+                .statusCode(404)
                 .body("status", equalTo("error"))
-                .body("message", equalTo("Breed not found (main breed does not exist)"));
+                .body("message",
+                        equalTo("Breed not found (main breed does not exist)"));
     }
 
-    @Test(description = "API Params: Solicită un număr specific de imagini aleatorii folosind parametru în URL")
-    public void testGetRandomImagesWithParams() {
-        int numberOfImages = 3;
+    @Test(description = "Verify random images endpoint returns requested number of images")
+    public void shouldReturnRequestedNumberOfRandomImages() {
+
+        int imageCount = 3;
 
         given()
-                .baseUri("https://dog.ceo/api")
                 .contentType(ContentType.JSON)
-                .pathParam("count", numberOfImages)
+                .pathParam("count", imageCount)
+
                 .when()
-                .get("/breeds/image/random/{count}")
+                .get(RANDOM_IMAGES_ENDPOINT)
+
                 .then()
                 .statusCode(200)
-                .body("status", equalTo("success"))
-                .body("message", hasSize(numberOfImages))
-                .body("message[0]", containsString("https://images.dog.ceo/breeds/"));
+                .body("status", equalTo(SUCCESS_STATUS))
+                .body("message", hasSize(imageCount))
+                .body("message[0]", startsWith("https://images.dog.ceo/breeds/"));
     }
 }
