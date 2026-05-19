@@ -4,17 +4,18 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import utils.DriverFactory;
+import utils.WaitUtils;
 
 import java.util.List;
 
 public class InventoryPage {
-    private WebDriver driver;
 
     @FindBy(className = "title")
     private WebElement pageTitle;
 
-    @FindBy(css = "button[id^='add-to-cart']")
-    private List<WebElement> addToCartButtons;
+    @FindBy(id = "add-to-cart-sauce-labs-backpack")
+    private WebElement addBackpackButton;
 
     @FindBy(className = "shopping_cart_badge")
     private WebElement cartBadge;
@@ -22,26 +23,27 @@ public class InventoryPage {
     @FindBy(className = "shopping_cart_link")
     private WebElement cartLink;
 
-    public InventoryPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+    public InventoryPage() {
+        PageFactory.initElements(DriverFactory.getDriver(), this);
     }
 
-    public String getPageTitle() {
-        return pageTitle.getText();
+    public String getPageTitleText() {
+        return WaitUtils.waitForVisibility(pageTitle).getText();
     }
 
-    public void addFirstProductToCart() {
-        if (!addToCartButtons.isEmpty()) {
-            addToCartButtons.get(0).click();
-        }
+    public void addBackpackToCart() {
+        WaitUtils.waitForClickability(addBackpackButton).click();
     }
 
-    public String getCartCount() {
-        return cartBadge.getText();
+    public String getCartBadgeCount() {
+        return WaitUtils.waitForVisibility(cartBadge).getText();
     }
 
-    public void goToCart() {
-        cartLink.click();
+    /**
+     * Fluent Navigation: Navigates to the Cart review container page
+     */
+    public CartPage clickCartIcon() {
+        WaitUtils.waitForClickability(cartLink).click();
+        return new CartPage();
     }
 }

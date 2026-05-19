@@ -4,26 +4,29 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import utils.DriverFactory;
+import utils.WaitUtils;
 
 public class CartPage {
-    private WebDriver driver;
-
-    @FindBy(className = "inventory_item_name")
-    private WebElement firstItemName;
+    @FindBy(className = "cart_item")
+    private WebElement cartItemRow;
 
     @FindBy(id = "checkout")
     private WebElement checkoutButton;
 
-    public CartPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+    public CartPage() {
+        PageFactory.initElements(DriverFactory.getDriver(), this);
     }
 
-    public String getFirstItemName() {
-        return firstItemName.getText();
+    public boolean isItemInCart() {
+        return WaitUtils.waitForVisibility(cartItemRow).isDisplayed();
     }
 
-    public void clickCheckout() {
-        checkoutButton.click();
+    /**
+     * Fluent Navigation: Advances directly into checkout forms processing
+     */
+    public CheckoutPage clickCheckout() {
+        WaitUtils.waitForClickability(checkoutButton).click();
+        return new CheckoutPage();
     }
 }

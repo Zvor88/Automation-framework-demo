@@ -4,10 +4,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import utils.DriverFactory;
+import utils.WaitUtils;
 
 public class CheckoutPage {
-    private WebDriver driver;
-
     @FindBy(id = "first-name")
     private WebElement firstNameField;
 
@@ -24,25 +24,24 @@ public class CheckoutPage {
     private WebElement finishButton;
 
     @FindBy(className = "complete-header")
-    private WebElement completeHeader;
+    private WebElement confirmationHeader;
 
-    public CheckoutPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+    public CheckoutPage() {
+        PageFactory.initElements(DriverFactory.getDriver(), this);
     }
 
-    public void fillInformation(String firstName, String lastName, String postalCode) {
-        firstNameField.sendKeys(firstName);
-        lastNameField.sendKeys(lastName);
-        postalCodeField.sendKeys(postalCode);
-        continueButton.click();
+    public void fillShippingInformation(String first, String last, String zip) {
+        WaitUtils.waitForVisibility(firstNameField).sendKeys(first);
+        lastNameField.sendKeys(last);
+        postalCodeField.sendKeys(zip);
+        WaitUtils.waitForClickability(continueButton).click();
     }
 
-    public void clickFinish() {
-        finishButton.click();
+    public void clickFinishOrder() {
+        WaitUtils.waitForClickability(finishButton).click();
     }
 
-    public String getSuccessMessage() {
-        return completeHeader.getText();
+    public String getOrderConfirmationMessage() {
+        return WaitUtils.waitForVisibility(confirmationHeader).getText();
     }
 }

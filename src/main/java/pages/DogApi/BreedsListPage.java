@@ -1,12 +1,12 @@
 package pages.DogApi;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import utils.DriverFactory;
+import utils.WaitUtils;
 
 public class BreedsListPage {
-    private WebDriver driver;
 
     @FindBy(xpath = "//h1[contains(text(),'Breeds list')]")
     private WebElement breedsHeading;
@@ -17,24 +17,23 @@ public class BreedsListPage {
     @FindBy(css = "div.dog-image img")
     private WebElement dogImage;
 
-    public BreedsListPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+    public BreedsListPage() {
+        PageFactory.initElements(DriverFactory.getDriver(), this);
     }
 
     public String getHeadingText() {
-        return breedsHeading.getText();
+        return WaitUtils.waitForVisibility(breedsHeading).getText();
     }
 
     public void clickFetchDogButton() {
-        fetchDogButton.click();
+        WaitUtils.waitForClickability(fetchDogButton).click();
     }
 
     public boolean isDogImageDisplayed() {
-        return dogImage.isDisplayed();
+        return WaitUtils.waitForVisibility(dogImage).isDisplayed();
     }
 
     public String getDogImageSrc() {
-        return dogImage.getAttribute("src");
+        return WaitUtils.waitForVisibility(dogImage).getAttribute("src");
     }
 }

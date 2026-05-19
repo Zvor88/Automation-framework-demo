@@ -1,12 +1,12 @@
 package pages.DogApi;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import utils.DriverFactory;
+import utils.WaitUtils;
 
 public class AboutPage {
-    private WebDriver driver;
 
     // Locators mapping via PageFactory
     @FindBy(xpath = "//h1[contains(text(),'About')]")
@@ -18,24 +18,21 @@ public class AboutPage {
     @FindBy(linkText = "Breeds list")
     private WebElement breedsListLink;
 
-    public AboutPage(WebDriver driver) {
-        this.driver = driver;
-        // Initializes WebElements declared using @FindBy
-        PageFactory.initElements(driver, this);
+
+    public AboutPage() {
+        PageFactory.initElements(DriverFactory.getDriver(), this);
     }
 
     public String getHeadingText() {
-        return aboutHeading.getText();
+        return WaitUtils.waitForVisibility(aboutHeading).getText();
     }
 
-    public DocumentationPage clickDocumentation() {
-        documentationLink.click();
-        return new DocumentationPage(driver);
+
+    public void clickDocumentation() {
+        WaitUtils.waitForClickability(documentationLink).click();
     }
 
-    public BreedsListPage clickBreedsList() {
-        breedsListLink.click();
-        return new BreedsListPage(driver);
+    public void clickBreedsList() {
+        WaitUtils.waitForClickability(breedsListLink).click();
     }
-
 }

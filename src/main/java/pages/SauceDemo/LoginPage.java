@@ -1,16 +1,14 @@
 package pages.SauceDemo;
 
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import utils.DriverFactory;
+import utils.WaitUtils;
 
 
 public class LoginPage {
-    private WebDriver driver;
-
-    // Locatori definiți prin Page Factory
     @FindBy(id = "user-name")
     private WebElement usernameField;
 
@@ -20,24 +18,46 @@ public class LoginPage {
     @FindBy(id = "login-button")
     private WebElement loginButton;
 
-    @FindBy(css = "[data-test='error']")
+    @FindBy(className = "login_logo")
+    private WebElement loginLogo;
+
+    @FindBy(xpath = "//h3[@data-test='error']")
     private WebElement errorMessage;
 
-    // Constructorul inițializează elementele
-    public LoginPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+    public LoginPage() {
+        PageFactory.initElements(DriverFactory.getDriver(), this);
     }
 
-    public void login(String user, String pass) {
-        usernameField.clear();
-        usernameField.sendKeys(user);
+    public boolean isLogoDisplayed() {
+        return WaitUtils.waitForVisibility(loginLogo).isDisplayed();
+    }
+
+    public InventoryPage loginWithDefaultCredentials() {
+        WebElement user = WaitUtils.waitForVisibility(usernameField);
+        user.clear();
+        user.sendKeys(DriverFactory.USERNAME); // Pulls credentials directly from factory
+
         passwordField.clear();
-        passwordField.sendKeys(pass);
-        loginButton.click();
+        passwordField.sendKeys(DriverFactory.PASSWORD);
+
+        WaitUtils.waitForClickability(loginButton).click();
+        return null;
+    }
+
+    public InventoryPage loginWithInvalidCredentials() {
+
+        WebElement user = WaitUtils.waitForVisibility(usernameField);
+        user.clear();
+        user.sendKeys(DriverFactory.BADUSER); // Pulls credentials directly from factory
+
+        passwordField.clear();
+        passwordField.sendKeys(DriverFactory.BADPASSWORD);
+
+        WaitUtils.waitForClickability(loginButton).click();
+        return null;
     }
 
     public String getErrorMessageText() {
-        return errorMessage.getText();
+        return WaitUtils.waitForVisibility(errorMessage).getText();
     }
 }

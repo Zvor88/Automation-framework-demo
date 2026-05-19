@@ -1,22 +1,29 @@
 package utils;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.DriverFactory;
 
 import java.time.Duration;
 
 public class WaitUtils {
 
-    public static WebElement waitForElementVisible(WebDriver driver, By locator, int timeoutSeconds) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    private static final int DEFAULT_TIMEOUT = 10;
+
+    /**
+     * Waits until an element is fully visible in the DOM before returning it
+     */
+    public static WebElement waitForVisibility(WebElement element) {
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
+        return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
-    public static void waitForClickableAndClick(WebDriver driver, By locator, int timeoutSeconds) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
-        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    /**
+     * Waits until an element is clickable before execution moves forward
+     */
+    public static WebElement waitForClickability(WebElement element) {
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
+        return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 }
