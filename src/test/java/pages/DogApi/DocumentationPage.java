@@ -9,7 +9,7 @@ import utils.WaitUtils;
 
 public class DocumentationPage extends BasePage {
 
-    @FindBy(xpath = "//h1[contains(text(),'Documentation')]")
+    @FindBy(xpath = "//h3[contains(text(),'Endpoints')]")
     private WebElement docHeading;
 
     @FindBy(linkText = "All breeds list")

@@ -9,7 +9,7 @@ import utils.WaitUtils;
 
 public class BreedsListPage extends BasePage {
 
-    @FindBy(xpath = "//h1[contains(text(),'Breeds list')]")
+    @FindBy(xpath = "//h3[contains(text(),'Breeds list')]")
     private WebElement breedsHeading;
 
     @FindBy(css = "button.get-dog")

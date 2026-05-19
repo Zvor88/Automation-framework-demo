@@ -12,6 +12,7 @@ import pages.SauceDemo.LoginPage;
 public class SauceDemoUI extends BaseTest {
 
     @Test(
+            priority = 1,
             description = "Sanity Checklist: Verify inventory catalog structure loads post login."
     )
     public void testInventoryDashboardLoads() {
@@ -25,6 +26,7 @@ public class SauceDemoUI extends BaseTest {
     }
 
     @Test(
+            priority = 2,
             description = "E2E Order Cycle: Add item to shopping cart, verify badge, and complete complete checkout flow."
     )
     public void testCompleteE2EPurchasePipeline() {

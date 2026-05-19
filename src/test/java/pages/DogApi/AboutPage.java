@@ -10,7 +10,7 @@ import utils.WaitUtils;
 public class AboutPage extends BasePage {
 
     // Locators mapping via PageFactory
-    @FindBy(xpath = "//h1[contains(text(),'About')]")
+    @FindBy(xpath = "//h3[contains(text(),'About')]")
     private WebElement aboutHeading;
 
     @FindBy(linkText = "Documentation")

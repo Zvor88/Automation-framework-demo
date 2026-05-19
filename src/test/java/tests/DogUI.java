@@ -26,7 +26,7 @@ public class DogUI extends BaseTest {
 
         Assert.assertEquals(
                 aboutPage.getHeadingText(),
-                "About",
+                "ABOUT",
                 "About page heading is incorrect."
         );
     }
@@ -44,7 +44,7 @@ public class DogUI extends BaseTest {
 
         Assert.assertEquals(
                 documentationPage.getHeadingText(),
-                "Documentation",
+                "ENDPOINTS",
                 "Documentation page heading is incorrect."
         );
 
@@ -67,7 +67,7 @@ public class DogUI extends BaseTest {
 
         Assert.assertEquals(
                 breedsListPage.getHeadingText(),
-                "Breeds list",
+                "BREEDS LIST",
                 "Breeds List page heading is incorrect."
         );
 
