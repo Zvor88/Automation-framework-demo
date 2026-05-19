@@ -7,11 +7,11 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-public class APITests {
+public class DogAPI {
 
     @BeforeClass
     public void setup() {
-        // Citim URL-ul din fișierul de configurare optimizat
+        // Citim URL-ul din fișierul de configurare
         baseURI = ConfigReader.getProperty("api.dog.baseUrl");
     }
 

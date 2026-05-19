@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Proiect Final Automatizare">
+   <listeners>
+
+   </listeners>
+   
     <test name="Componenta UI - SauceDemo">
         <classes>
-            <class name="tests.APITests"/>
+            <class name="tests.DogAPI"/>
         </classes>
     </test>
+
+    <test name="Componenta UI - DogUI">
+        <classes>
+            <class name="tests.DogUI"/>
+        </classes>
+    </test>
+
     <test name="Componenta API - Dog API">
         <classes>
-            <class name="tests.UITests"/>
+            <class name="tests.SauceDemoUI"/>
         </classes>
     </test>
 </suite>

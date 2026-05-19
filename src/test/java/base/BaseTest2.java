@@ -1,15 +1,15 @@
 package base;
 
-import utils.ConfigReader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import utils.ConfigReader;
 
 import java.time.Duration;
 
-public class BaseTest {
+public class BaseTest2 {public class BaseTest {
     protected WebDriver driver;
 
     @BeforeMethod
@@ -18,7 +18,7 @@ public class BaseTest {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get(ConfigReader.getProperty("ui.url"));
+        driver.get(ConfigReader.getProperty("ui.url2"));
     }
 
     @AfterMethod
@@ -27,4 +27,5 @@ public class BaseTest {
             driver.quit();
         }
     }
+}
 }

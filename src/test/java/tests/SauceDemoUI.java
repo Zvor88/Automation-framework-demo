@@ -1,15 +1,15 @@
 package tests;
 
-import base.BaseTest;
+import base.BaseTest1;
 import utils.ConfigReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.CartPage;
-import pages.CheckoutPage;
-import pages.InventoryPage;
-import pages.LoginPage;
+import pages.SauceDemo.CartPage;
+import pages.SauceDemo.CheckoutPage;
+import pages.SauceDemo.InventoryPage;
+import pages.SauceDemo.LoginPage;
 
-public class UITests extends BaseTest {
+public class SauceDemoUI extends BaseTest1 {
     @Test(description = "UI 1: Autentificare cu succes")
     public void testSuccessfulLogin() {
         LoginPage loginPage = new LoginPage(driver);

@@ -42,13 +42,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- JSON Parsing for API Tests (Jackson) -->
-        <dependency>
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>3.1.3</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -63,6 +56,15 @@
             <artifactId>webdrivermanager</artifactId>
             <version>5.7.0</version>
         </dependency>
+
+        <!-- Source: https://mvnrepository.com/artifact/io.qameta.allure/allure-maven -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-maven</artifactId>
+            <version>2.8</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

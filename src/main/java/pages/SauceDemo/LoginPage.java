@@ -1,4 +1,4 @@
-package pages;
+package pages.SauceDemo;
 
 
 import org.openqa.selenium.WebDriver;
