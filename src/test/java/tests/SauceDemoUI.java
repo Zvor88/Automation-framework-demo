@@ -33,7 +33,7 @@ public class SauceDemoUI extends BaseTest {
         LoginPage loginPage = new LoginPage();
 
         // Fluent Step 1: Login -> Inventory View
-        InventoryPage inventoryPage = loginPage.loginWithInvalidCredentials();
+        InventoryPage inventoryPage = loginPage.loginWithDefaultCredentials();
         inventoryPage.addBackpackToCart();
         Assert.assertEquals(inventoryPage.getCartBadgeCount(), "1", "The item notification badge count is mismatching.");
 

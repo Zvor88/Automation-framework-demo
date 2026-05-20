@@ -42,7 +42,7 @@ public class LoginPage extends BasePage {
         passwordField.sendKeys(DriverFactory.PASSWORD);
 
         WaitUtils.waitForClickability(loginButton).click();
-        return null;
+        return new InventoryPage();
     }
 
     public InventoryPage loginWithInvalidCredentials() {
@@ -55,7 +55,7 @@ public class LoginPage extends BasePage {
         passwordField.sendKeys(DriverFactory.BADPASSWORD);
 
         WaitUtils.waitForClickability(loginButton).click();
-        return null;
+        return new InventoryPage();
     }
 
     public String getErrorMessageText() {

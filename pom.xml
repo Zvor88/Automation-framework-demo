@@ -98,7 +98,18 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <phase>test</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Surefire Test Runner Configured with AspectJ JavaAgent (Mandatory for Allure Screenshots) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
