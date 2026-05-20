@@ -10,18 +10,18 @@ import utils.ScreenshotUtils;
 public class TestListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
-        System.out.println("🚀 [STARTING] Test Method: " + result.getMethod().getMethodName()
+        System.out.println("[STARTING] Test Method: " + result.getMethod().getMethodName()
                 + " on Thread ID: " + Thread.currentThread().getId());
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        System.out.println("✅ [PASSED] Test Method: " + result.getMethod().getMethodName());
+        System.out.println("[PASSED] Test Method: " + result.getMethod().getMethodName());
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        System.out.println("❌ [FAILED] Test Method: " + result.getMethod().getMethodName());
+        System.out.println("[FAILED] Test Method: " + result.getMethod().getMethodName());
 
         try {
             // Fetch screenshot bytes via our utility and pipe them to Allure
@@ -30,13 +30,13 @@ public class TestListener implements ITestListener {
                 attachScreenshotToAllureReport(result.getName() + "_failure_attachment", screenshot);
             }
         } catch (Exception e) {
-            System.err.println("⚠️ Interceptor error tracking failure attachment streaming: " + e.getMessage());
+            System.err.println("Interceptor error tracking failure attachment streaming: " + e.getMessage());
         }
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        System.out.println("⏭️ [SKIPPED] Test Method: " + result.getMethod().getMethodName());
+        System.out.println("[SKIPPED] Test Method: " + result.getMethod().getMethodName());
     }
 
     /**
@@ -49,11 +49,11 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onStart(ITestContext context) {
-        System.out.println("🏁 [SUITE START] Launching Test Context Suite: " + context.getName());
+        System.out.println("[SUITE START] Launching Test Context Suite: " + context.getName());
     }
 
     @Override
     public void onFinish(ITestContext context) {
-        System.out.println("🏁 [SUITE FINISH] Completed Test Context Suite: " + context.getName());
+        System.out.println("[SUITE FINISH] Completed Test Context Suite: " + context.getName());
     }
 }
