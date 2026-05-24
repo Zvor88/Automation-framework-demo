@@ -88,6 +88,26 @@
 
     <build>
         <plugins>
+            <!-- Allure plugin pt clean install -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>clean-allure-results</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <target>
+                                <create dir="${project.basedir}/allure-results"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

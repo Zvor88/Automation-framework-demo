@@ -40,9 +40,9 @@ public class ScreenshotUtils {
         // 3. Save a physical copy to the disk for archival history logs
         try {
             FileUtils.copyFile(srcFile, destFile);
-            System.out.println("📸 Local screenshot saved at: " + destFile.getAbsolutePath());
+            System.out.println("Local screenshot saved at: " + destFile.getAbsolutePath());
         } catch (IOException e) {
-            System.err.println("⚠️ Failed to write screenshot image copy to disk storage: " + e.getMessage());
+            System.err.println("Failed to write screenshot image copy to disk storage: " + e.getMessage());
         }
 
         return screenshotBytes;

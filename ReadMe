@@ -1,0 +1,232 @@
+ Automation Framework Demo
+
+Un cadru de automatizare modern, robust și scalabil pentru testarea interfețelor web (UI), construit pe baza arhitecturii **Page Object Model (POM)**. Proiectul utilizează un motor de driver izolat pe fire de execuție (**ThreadLocal WebDriver Factory**) pentru a permite rularea testelor în paralel fără riscul de coliziune a sesiunilor de browser.
+
+Framework-ul integrează două aplicații complet diferite pentru demonstrație: **Saucedemo (E-Commerce Storefront)** și **Dog API UI**.
+
+
+ Tehnologii și Dependințe Core
+
+Proiectul este gestionat prin **Maven** și include următoarele tehnologii baselines (vizibile în `pom.xml`):
+* **Java 17** (Sursă și Target de compilare)
+* **Selenium Java (v4.4.0)** - Pentru interacțiunea nativă cu elementele browserului.
+* **WebDriverManager (v6.3.4)** - Gestionarea automată a binarelor de driver (Chrome, Firefox, Edge).
+* **TestNG (v7.12.0)** - Motorul de execuție a testelor, aserțiunilor și managementul execuției paralele.
+* **Allure Reporting (v2.34.0)** & **AspectJ RT (v1.9.25.1)** - Generarea de rapoarte vizuale interactive și atașarea automată a capturilor de ecran la eșec.
+* **REST-Assured (v6.0.0)** - Pregătit pentru extinderea testării la nivel de API.
+
+
+ Structura Proiectului (Project Architecture)
+
+Conform structurii vizibile în IDE, proiectul este organizat astfel:
+
+src
+└── test
+    └── java
+        ├── base
+        │   ├── BasePage.java
+        │   └── BaseTest.java          # Configurația de Setup/Teardown globală a sesiunilor
+        ├── listener
+        │   └── TestListener.java      # Interceptor TestNG pentru loguri și screenshot-uri la eșec
+        ├── pages                      # Clasele de tip Page Object (Fără argumente în constructor)
+        │   ├── DogApi
+        │   └── SauceDemo
+        │       ├── CartPage.java
+        │       ├── CheckoutPage.java
+        │       ├── InventoryPage.java
+        │       └── LoginPage.java
+        ├── tests                      # Clasele care conțin scripturile de test efective
+        │   ├── DogAPI.java
+        │   ├── DogUI.java
+        │   └── SauceDemoUI.java
+        └── utils
+            ├── ConfigReader.java      # Utilitate pentru citirea proprietăților din config.properties
+            ├── DriverFactory.java     # Fabrica ThreadLocal pentru instanțierea izolată a browserelor
+            ├── ScreenshotUtils.java   # Captură ecran integrată cu fluxul Allure
+            └── WaitUtils.java         # Managementul așteptărilor explicite (Explicit Waits)
+
+    Predependente:
+     Pasul 1: Instalarea Java Development Kit (JDK)
+     Framework-ul este construit folosind Java 17 (așa cum este configurat în fișierul pom.xml).
+
+     Descarcă și instalează JDK 17 (recomandat de la Oracle sau Eclipse Temurin/Adoptium).
+
+     Asigură-te că ai configurat variabila de mediu JAVA_HOME către directorul unde ai instalat JDK-ul.
+
+     Verifică instalarea deschizând un terminal și rulând comanda:
+
+     java -version
+     Ar trebui să vezi afișat o versiune de tipul 17.x.x.
+
+     Pasul 2: Instalarea build-tool-ului Apache Maven
+     Proiectul folosește Maven pentru managementul dependențelor (selenium, testng, allure) și pentru rularea testelor.
+
+     Descarcă Apache Maven de pe site-ul oficial.
+
+     Extrage arhiva și adaugă folderul bin în variabila de mediu PATH a sistemului tău (Windows/Mac/Linux).
+
+     Verifică instalarea în terminal cu comanda:
+
+     mvn -version
+     Pasul 3: Instalarea unui mediu de dezvoltare (IDE)
+     Ai nevoie de un IDE modern pentru a deschide proiectul și a edita codul cu ușurință.
+
+     Descărcați și instalați IntelliJ IDEA (Versiunea Community Edition este complet gratuită și oferă suport nativ excelent pentru Maven și TestNG).
+
+     Alternativă: Poti folosi Eclipse IDE sau VS Code (cu extensiile de Java instalate).
+
+     Pasul 4: Clonarea proiectului din GitHub
+     Trebuie să descarci codul sursă al framework-ului pe mașina ta locală.
+
+     Deschide un terminal în folderul unde dorești să salvezi proiectul.
+
+     Rulează comanda de clonare Git:
+
+     git clone https://github.com/Zvor88/Automation-framework-demo.git
+
+     Deschide IDE-ul (ex: IntelliJ), selectează Open și alege folderul tocmai clonat. Lasă IntelliJ să încarce automat toate dependențele specificate în pom.xml (vei vedea o bară de progres în colțul din dreapta jos).
+
+     Pasul 5: Browserele Web
+     Datorită librăriei io.github.bonigarcia.webdrivermanager pe care ai integrat-o în pom.xml, NU mai este nevoie să descarci manual executabile ca chromedriver sau geckodriver.
+
+     Singura precondiție este să ai browserele Google Chrome, Mozilla Firefox sau Microsoft Edge instalate normal pe calculatorul tău (la versiuni recente). Framework-ul va detecta automat versiunea browserului tău și va descărca binarul potrivit în fundal în timpul rulării.
+
+     Pasul 6 (Opțional): Allure Command Line Tool
+     Pentru a genera și vizualiza rapoartele grafice frumoase generate de Allure în browser, ai nevoie de utilitarul Allure instalat pe sistem.
+
+     Pe Windows: Poți folosi Scoop (scoop install allure) sau poți descărca arhiva manual de pe GitHub-ul Allure și să adaugi folderul bin în PATH.
+
+     Pe Mac: Se instalează simplu prin Homebrew:
+
+     brew install allure
+     După ce ai bifat acești pași, ești gata să deschizi fișierul testng.xml, să dai click dreapta și să selectezi Run, sau să rulezi direct din terminal mvn clean test!
+
+
+
+        Caracteristici Principale (Key Features)
+
+    1. ThreadLocal DriverFactory
+    Browserul nu este pasat prin constructori. Fiecare test își extrage instanța proprie din thread-ul curent rulat. Suportă nativ:
+
+    chrome (Configurat implicit cu opțiunile --start-maximized și --disable-notifications)
+
+    firefox
+
+    edge
+
+    2. Medii Dinamice prin Enums
+    Clasa DriverFactory expune un Enum Environment prin care se controlează dinamic URL-ul țintă trimis prin parametrii TestNG:
+
+    DOG_UI -> https://dog.ceo/dog-api/about
+
+    SAUCEDEMO -> https://www.saucedemo.com/
+
+    3. Date de Autentificare Centralizate
+    Datele de test (utilizatori ficși și parole) sunt stocate în siguranță ca proprietăți statice în fabrică:
+
+    Utilizator Valid: standard_user / Parolă: secret_sauce
+
+    Utilizator Invalid: Gogu / Parolă: Miti
+
+     Rularea Testelor
+    Configurația Dynamic TestNG (testng.xml)
+    Framework-ul utilizează fișierul testng.xml aflat în rădăcina proiectului pentru a mapa testele. Rularea se face pe bază de parametri (browser și env), permițând rularea aceluiași test pe configurații diferite.
+
+    Rularea din Terminal (Maven)
+    Pentru a curăța build-ul și a lansa suita completă configurată în testng.xml, execută:
+
+    mvn clean test
+    Rularea în Paralel
+
+    Fișierul testng.xml este preconfigurat cu directiva parallel="tests" thread-count="2". Acest lucru înseamnă că testele pentru SauceDemo și DogAPI vor porni în mod simultan în ferestre de browser complet separate (izolate la nivel de memorie).
+
+     Raportare Allure (Allure Reports)
+    Framework-ul are preconfigurat plugin-ul maven-antrun-plugin care curăță automat directorul allure-results la fiecare inițializare de test (mvn clean).
+
+    Dacă un test eșuează, clasa TestListener interceptează evenimentul, apelează ScreenshotUtils și atașează automat imaginea .png direct în raportul Allure generat.
+
+    Pentru a vizualiza raportul interactiv la finalul execuției, rulează:
+
+    mvn allure:serve
+
+    Srructura recomandata pentu bugs:
+
+    1. Bug ID (Identificatorul unice)
+    Generat automat de instrumente de project management precum Jira, Azure DevOps sau GitHub Issues (ex: QA-124, SHOP-405).
+
+    2. Title / Summary (Titlul)
+    Trebuie să fie scurt, clar și să răspundă rapid la 3 întrebări fundamentale: Ce se întâmplă, Unde se întâmplă și În ce condiții.
+
+    Format recomandat: [Modul/Pagină] - Ce nu funcționează - Când se întâmplă
+
+    Exemplu PRO: [Checkout] - Butonul "Plasează Comanda" este inactiv (machetat greyed-out) după completarea tuturor câmpurilor obligatorii.
+
+    Exemplu CONTRA: Nu merge plata.
+
+    3. Environment (Mediul de testare)
+    Detaliile tehnice ale ecosistemului în care s-a identificat problema.
+
+    URL / Build Version: Staging v2.4.1 sau https://staging.saucedemo.com/
+
+    Browser / OS: Google Chrome v124.0.x / Windows 11 sau iPhone 15 / iOS 17.2
+
+    4. Severity vs Priority (Severitate și Prioritate)
+    Severity (Impactul tehnic): Cât de grav afectează bug-ul sistemul (ex: Blocker, Critical, Major, Minor).
+
+    Priority (Urgența de business): Cât de repede trebuie reparat (ex: High, Medium, Low).
+
+    5. Preconditions (Precondiții)
+    Orice stare inițială necesară înainte de a începe pașii de reproducere.
+
+    Exemplu: Utilizatorul trebuie să fie autentificat cu un cont de tip "standard_user" și să aibă cel puțin un produs adăugat în coș.
+
+    6. Steps to Reproduce (Pașii de reproducere)
+    Pași numerotați, clari și atomici. Oricine (chiar și un manager non-tehnic) ar trebui să poată reproduce bug-ul urmărind acești pași.
+
+    Navigați către pagina de login https://www.saucedemo.com/.
+
+    Introduceți credențialele valide și apăsați butonul de login.
+
+    Dați click pe iconița de coș de cumpărături din colțul dreapta-sus.
+
+    Apăsați butonul "Checkout".
+
+    7. Expected Result (Rezultatul Așteptat)
+    Ce ar fi trebuit să se întâmple conform cerințelor de business (User Story / Specificații).
+
+    Exemplu: Pagina de checkout se încarcă corect, afișând formularele pentru First Name, Last Name și Postal Code.
+
+    8. Actual Result (Rezultatul Actual)
+    Ce se întâmplă în mod eronat în realitate.
+
+    Exemplu: Aplicația crapă, ecranul devine alb complet și în consolă apare eroarea 500 Internal Server Error.
+
+    9. Attachments (Atașamente)
+    Dovada vizuală a problemei. Dezvoltatorii se uită adesea prima dată la atașamente.
+
+    Screenshot-uri: Cu elementul defect evidențiat (încercuit).
+
+    Înregistrări video (Screen Recording): Pentru bug-uri de flux, animații sau probleme de performanță.
+
+    Loguri: Extrase din consola browserului (DevTools Network/Console tab) sau loguri de server.
+
+    Jira Ticket: SAUCE-892
+
+    Summary: [Cart] - Badge-ul de notificare nu se actualizează când un produs este șters din coș
+
+    Environment: Staging Env - Build v1.0.4 | Chrome v122 | MacOS Sonoma
+
+    Severity: Major | Priority: Medium
+
+    Preconditions: > Utilizatorul se află pe pagina de inventar și are deja 2 produse adăugate în coș (badge-ul arată numărul "2").
+
+    Steps to Reproduce: > 1. Dați click pe iconița de coș (shopping_cart_link) pentru a deschide pagina de previzualizare.
+
+    2. Identificați primul produs din listă ("Sauce Labs Backpack") și dați click pe butonul roșu "Remove".
+
+    Expected Result: > Produsul este eliminat din listă, iar numărul afișat pe badge-ul coșului scade instant de la "2" la "1".
+
+    Actual Result: > Produsul dispare din listă, însă badge-ul din colțul paginii continuă să afișeze valoarea "2" până la un refresh manual al paginii (F5).
+
+    Attachments: bug_badge_mismatch.mp4, console_logs.txt
+
