@@ -13,7 +13,6 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Dependency Version Framework Baselines -->
         <selenium.version>4.44.0</selenium.version>
         <testng.version>7.12.0</testng.version>
         <webdrivermanager.version>6.3.4</webdrivermanager.version>
@@ -23,92 +22,57 @@
     </properties>
 
     <dependencies>
-        <!-- ========================================================== -->
-        <!-- UI AUTOMATION CORE -->
-        <!-- ========================================================== -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.44.0</version>
+            <version>${selenium.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>6.3.4</version>
+            <version>${webdrivermanager.version}</version>
             <scope>compile</scope>
         </dependency>
 
-        <!-- ========================================================== -->
-        <!-- API AUTOMATION CORE -->
-        <!-- ========================================================== -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>6.0.0</version>
+            <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- ========================================================== -->
-        <!-- TEST ENGINE CORE -->
-        <!-- ========================================================== -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.12.0</version>
+            <version>${testng.version}</version>
         </dependency>
 
-        <!-- ========================================================== -->
-        <!-- ALLURE REPORTING INTEGRATION -->
-        <!-- ========================================================== -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
-            <version>2.34.0</version>
+            <version>${allure.version}</version>
             <scope>compile</scope>
         </dependency>
 
-        <!-- AspectJ RT for Runtime Bytecode Manipulation during Screenshots -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.9.25.1</version>
+            <version>${aspectj.version}</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>15.0</version>
             <scope>compile</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Allure plugin pt clean install -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>clean-allure-results</id>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <target>
-                                <create dir="${project.basedir}/allure-results"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -118,9 +82,37 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                    <resultsDirectory>${project.build.directory}/</resultsDirectory>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -130,30 +122,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Surefire Test Runner Configured with AspectJ JavaAgent (Mandatory for Allure Screenshots) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
-                <configuration>
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    </argLine>
-                    <!-- Points to your custom dynamic multi-browser runtime suite xml mapping -->
-                    <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjweaver</artifactId>
-                        <version>1.9.25.1</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
         </plugins>
     </build>
 </project>
